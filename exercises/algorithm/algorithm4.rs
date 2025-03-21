@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -41,7 +40,7 @@ where
 
 impl<T> BinarySearchTree<T>
 where
-    T: Ord,
+    T: Ord + Clone,
 {
 
     fn new() -> Self {
@@ -50,13 +49,52 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        //TODO
+        if self.search(value.clone()) {
+            return;
+        }
+        if self.root.is_none() {
+            self.root = Some(Box::new(TreeNode::new(value)));
+            return;
+        }
+        let mut ptr = &mut self.root;
+        loop {
+            if let Some(ref mut cur_ptr) = ptr {
+                if cur_ptr.value < value {
+                    if cur_ptr.left.is_none() {
+                        cur_ptr.left = Some(Box::new(TreeNode::new(value)));
+                        return;
+                    }
+                    ptr = &mut cur_ptr.left;
+                } else {
+                    if cur_ptr.right.is_none() {
+                        cur_ptr.right = Some(Box::new(TreeNode::new(value)));
+                        return;
+                    }
+                    ptr = &mut cur_ptr.right;
+                }
+            }
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
-        //TODO
-        true
+        let mut ptr = &self.root;
+        loop {
+            if ptr.is_none() {
+                break;
+            }
+            if let Some(cur_ptr) = ptr {
+                if cur_ptr.value == value {
+                    return true;
+                }
+                if cur_ptr.value < value {
+                    ptr = &cur_ptr.left;
+                } else {
+                    ptr = &cur_ptr.right;
+                }
+            }
+        }
+        false
     }
 }
 
@@ -66,7 +104,11 @@ where
 {
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
-        //TODO
+        if self.value < value {
+            self.left = Some(Box::new(TreeNode::new(value))); 
+        } else {
+            self.right = Some(Box::new(TreeNode::new(value)));
+        }
     }
 }
 

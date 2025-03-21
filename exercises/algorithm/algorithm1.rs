@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -23,19 +22,19 @@ impl<T> Node<T> {
     }
 }
 #[derive(Debug)]
-struct LinkedList<T> {
+struct LinkedList<T: std::cmp::PartialOrd+Clone> {
     length: u32,
     start: Option<NonNull<Node<T>>>,
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::cmp::PartialOrd+Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::cmp::PartialOrd+Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -69,18 +68,44 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>, mut list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        if list_a.length == 0 {
+            return list_b;
         }
+        if list_b.length == 0 {
+            return list_a;
+        }
+        let mut new_list = Self::new();
+        let mut i = 0u32;
+        let mut ia = 0u32;
+        let mut ib = 0u32;
+        while ia < list_a.length && ib < list_b.length {
+            if *list_a.get(ia as i32).unwrap() <= *list_b.get(ib as i32).unwrap() {
+                new_list.add(list_a.get(ia as i32).unwrap().clone());
+                ia += 1;
+            } else {
+                new_list.add(list_b.get(ib as i32).unwrap().clone());
+                ib += 1;
+            }
+            i+=1;
+        }
+        while ia < list_a.length {
+            new_list.add(list_a.get(ia as i32).unwrap().clone());
+            ia += 1;
+            i+=1;
+        }
+        while ib < list_b.length {
+            new_list.add(list_b.get(ib as i32).unwrap().clone());
+            ib += 1;
+            i+=1;
+        }
+        new_list.length = i;
+		new_list
 	}
 }
 
-impl<T> Display for LinkedList<T>
+impl<T: std::cmp::PartialOrd+Clone> Display for LinkedList<T>
 where
     T: Display,
 {

@@ -3,10 +3,9 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+fn sort<T: std::cmp::PartialOrd + std::cmp::Ord>(array: &mut [T]){
+	array.sort_by(|x,y| x.cmp(y))
 }
 #[cfg(test)]
 mod tests {
